@@ -80,7 +80,6 @@ const submitBirthCertificateApplication = asyncHandler(async (req, res) => {
   }
   
   // Validate gender
-
   const trimmedGender = gender.trim();
   console.log("Trimmed Gender:",trimmedGender);
   if(gender !== 'Male' && gender !== 'Female' && gender !== 'Other'){
@@ -129,7 +128,6 @@ const submitBirthCertificateApplication = asyncHandler(async (req, res) => {
     'Birth Certificate Application Submitted',
     `Your application for ${childName}'s birth certificate has been submitted successfully.`
   );
-  
   // Notify admin about new application
   await notifyAdminNewApplication(application, req.user.fullName);
   
@@ -306,7 +304,143 @@ const getUserApplications = asyncHandler(async (req, res) => {
   );
 });
 
- 
+
+
+ //admin Dashboard Functionalities
+ const reviewApplication = asyncHandler(async (req,res)=>{
+  const {status,adminRemarks} = req.body;
+  const {applicationId} = req.params;
+
+  if(!applicationId){
+    throw new ApiError(400,"Application ID is required");
+  }
+  if(!status ||status !== 'approved' && status !== 'rejected'){
+    throw new ApiError(400,"Invalid status value");
+  }
+  const application = await Application.findOne({
+    $or: [
+      { _id: mongoose.isValidObjectId(applicationId) ? applicationId : null },
+      { applicationId }
+    ]
+  });
+
+  if(!application){
+    throw new ApiError(404,"Application not found");
+  }
+
+  if(application.status !=='pending'){
+    throw new ApiError(400,"Application is already reviewed");
+  }
+  application.status = status;
+  application.adminRemarks = adminRemarks;
+  application.reviewedAt = new Date();
+  application.reviewedBy = req.user._id;
+  await application.save();
+  //Notify user about status update
+  await Notification.create({
+    userId:application.applicantId,
+    applicationId:application._id,
+    type: status === 'approved' ? 'application_approved' : 'application_rejected',
+    title: status === 'approved' ? 'Application Approved' : 'Application Rejected',
+    message: status === 'approved' 
+      ? `Your ${application.documentType.replace('_', ' ')} application has been approved.` 
+      : `Your ${application.documentType.replace('_', ' ')} application has been rejected. Reason: ${adminRemarks}`
+  });
+
+  //Get Apllicant details for email notification
+  const applicant = await User.findById(application.applicantId);
+  if(applicant){
+    await notifyUserStatusUpdate(application,applicant);
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, { application }, `Application ${status} successfully`)
+  );
+ });
+
+ //upload certificate to cloudinary
+ const uploadCertificate = asyncHandler(async (req, res) => {
+  const { applicationId } = req.params;
+
+  if (!applicationId) {
+    throw new ApiError(400, "Application ID is required");
+  }
+  const uploadedFiles = await processUploadedFiles([req.file]);
+  
+  if (!uploadedFiles || uploadedFiles.length === 0) {
+    throw new ApiError(400, "Failed to process certificate file");
+  }
+  const application = await Application.findOne({
+    $or: [
+      { _id: mongoose.isValidObjectId(applicationId) ? applicationId : null },
+      { applicationId }
+    ]
+  });
+
+  if (!application) {
+    throw new ApiError(404, "Application not found");
+  }
+
+  if (application.status !== "approved") {
+    throw new ApiError(400, "Application must be approved to upload certificate");
+  }
+
+  console.log("Uploaded Files:", uploadedFiles);
+
+  // Update application with certificate details
+  application.generatedCertificate = {
+    fileName: uploadedFiles[0].fileName,
+    filePath: uploadedFiles[0].filePath,
+    generatedAt: new Date()
+  };
+  application.status = "certificate_generated";
+  await application.save();
+
+  // Create notification for the user
+  await Notification.create({
+    userId: application.applicantId,
+    applicationId: application._id,
+    type: 'certificate_ready',
+    title: 'Certificate Ready for Download',
+    message: `Your ${application.documentType.replace('_', ' ')} certificate is ready for download.`
+  });
+  // Get applicant details for email notification
+  const applicant = await User.findById(application.applicantId);
+  if (applicant) {
+    await notifyUserStatusUpdate(application, applicant);
+  }
+  
+  return res.status(200).json(
+    new ApiResponse(200, { application }, "Certificate uploaded successfully")
+  );
+
+ });
+ // Get applications by status (for admin filtering)
+const getApplicationsByStatus = asyncHandler(async (req, res) => {
+  // Check if user is admin
+  if (req.user.role !== 'admin') {
+    throw new ApiError(403, "Unauthorized access");
+  }
+  
+  const { status } = req.query;
+  
+  // Build filter based on status
+  const filter = {};
+  if (status && ['pending', 'approved', 'certificate_generated','rejected', 'completed'].includes(status)) {
+    filter.status = status;
+  }
+  
+  const applications = await Application.find(filter)
+    .sort({ createdAt: -1 })
+    .populate('applicantId', 'fullName')
+    .lean();
+  
+  return res.status(200).json(
+    new ApiResponse(200, applications, "Applications retrieved successfully")
+  );
+});
+
+
 
 // Get admin's applications
 const getAdminApplications = asyncHandler(async (req, res) => {
@@ -367,5 +501,8 @@ export {
   submitDeathCertificateApplication,
   submitMarriageCertificateApplication,
   getUserApplications,
-  getApplicationDetails
+  getApplicationDetails,
+  reviewApplication,
+  uploadCertificate,
+  getApplicationsByStatus
 };

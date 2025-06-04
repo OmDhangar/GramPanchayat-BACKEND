@@ -23,7 +23,7 @@ const applicationSchema = new mongoose.Schema({
   // Application Status
   status: {
     type: String,
-    enum: ['pending', 'under_review', 'approved', 'rejected', 'payment_pending', 'completed'],
+    enum: ['pending','approved', 'certificate_generated','rejected', 'completed'],
     default: 'pending'
   },
   
@@ -37,7 +37,7 @@ const applicationSchema = new mongoose.Schema({
     enum: ['BirthCertificate', 'DeathCertificate', 'MarriageCertificate']
   },
 
-  
+
   // File Uploads
   uploadedFiles: [{
     fileName: String,
@@ -75,7 +75,7 @@ const applicationSchema = new mongoose.Schema({
       enum: ['pending', 'completed', 'failed'],
       default: 'pending'
     },
-    paidAt: Date
+    paidAt: Date,
   }
 }, {
   timestamps: true

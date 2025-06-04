@@ -1,14 +1,17 @@
 import { Router } from "express";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { verifyAdmin, verifyJWT } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import {
+  getAdminApplications,
+  getApplicationsByStatus,
+  reviewApplication,
+  uploadCertificate,
   submitBirthCertificateApplication,
   submitDeathCertificateApplication,
   submitMarriageCertificateApplication,
   getUserApplications,
   getApplicationDetails
 } from "../controllers/application.controllers.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -32,8 +35,18 @@ router.route("/marriage-certificate").post(
 );
 
 // Application retrieval routes
+router.route("/user").get(verifyJWT,getUserApplications);
+router.route("/admin").get(verifyAdmin,getAdminApplications);
+router.route("/admin/filter").get(verifyAdmin,getApplicationsByStatus);
+router.route("/:applicationId").get(verifyJWT,getApplicationDetails);
 
-router.route("/user").get(verifyJWT , getUserApplications);
-router.route("/:applicationId").get( verifyJWT , getApplicationDetails);
+
+// Admin review routes
+router.route("/admin/review/:applicationId").post(verifyAdmin,reviewApplication);
+router.route("/admin/certificate/:applicationId").post(
+  verifyAdmin,
+  upload.single("certificate"),
+  uploadCertificate
+);
 
 export default router;
