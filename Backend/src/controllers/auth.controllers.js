@@ -34,7 +34,7 @@ const registerUser = asyncHandler(async function (req,res){
     //8.check for user creation
     //9.send response to user
     
-    const {fullName , email , password } = req.body;
+    const {fullName , email , password,confirmPassword } = req.body;
     console.log("Email:",email);
     
     if(
@@ -44,6 +44,10 @@ const registerUser = asyncHandler(async function (req,res){
         throw new ApiError(400,"All the fields are important");
         
     }
+    if(password !== confirmPassword){
+        throw new ApiError(400,"Password and confirm password does not match");
+    }
+
     const existingUser = await User.findOne({
         $or: [{fullName},{email}]
     });
@@ -51,36 +55,50 @@ const registerUser = asyncHandler(async function (req,res){
         throw new ApiError(409,"User already exists");
     }
    
-    const avatarLocalPath = req.files?.avatar[0]?.path;
-    console.log(avatarLocalPath)
-
-    if(!avatarLocalPath){
-        throw new ApiError(400,"avatar is required to uploaded")
-    }
     
-    const avatar = await uploadOnCloudinary(avatarLocalPath);
-    console.log(avatar)
-
-    if(!avatar){
-        throw new ApiError(400,"avatar is not uploaded")
+    /*
+    if(avatarLocalPath){
+        const avatarLocalPath = req.files?.avatar[0]?.path;
+        console.log(avatarLocalPath)
+        const avatar = await uploadOnCloudinary(avatarLocalPath);
+        console.log(avatar)
     }
+    */
     const user = await User.create({
        fullName, 
         email ,
         password ,
-        avatar:avatar.url ,
+        //avatar:avatar.url || '' ,
     })
     const createdUser = await User.findById(user._id).select(
         "-password -refreshToken"
     )
 
+
     if (!createdUser) {
         throw new ApiError(500, "Something went wrong while registering the user")
     }
+    //Generate access and refresh tokens
+    const {accessToken,refreshToken} = await generateAccessAndRefereshTokens(user._id);
+    //Set the cookies for access and refresh tokens
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
 
-    return res.status(201).json(
-        new ApiResponse(200, createdUser, "User registered Successfully")
-    )   
+    return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+        new ApiResponse(
+            200, 
+            {
+                user: user, accessToken, refreshToken
+            },
+            "User registered Successfully"
+        )
+    )  
 })
 
 const loginUser = asyncHandler(async function (req,res) {

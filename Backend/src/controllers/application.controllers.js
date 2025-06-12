@@ -70,7 +70,8 @@ const createNotification = async (userId, applicationId, type, title, message) =
 const submitBirthCertificateApplication = asyncHandler(async (req, res) => {
   const { 
     childName, dateOfBirth, placeOfBirth, gender,motherAdharNumber,parentsAddressAtBirth,
-    fatherName,fatherAdharNumber,permanentAddressParent ,motherName, fatherOccupation, motherOccupation, hospitalName 
+    fatherName,fatherAdharNumber,permanentAddressParent ,motherName, fatherOccupation, 
+    motherOccupation, hospitalName 
   } = req.body;
   
   // Validate date format
