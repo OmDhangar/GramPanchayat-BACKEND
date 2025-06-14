@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -10,7 +10,6 @@ import YearGallery from './pages/YearGallery';
 import NotFound from './pages/NotFound';
 import Forms from './pages/forms';
 import Dashboard from './components/dashboard';
-import LoginPage from './pages/register';
 import Loader from './components/loader';
 import FormDetails from './pages/FormDetails';
 import CertificateApprovals from './pages/CertificatesApprovals';
@@ -19,6 +18,9 @@ import { AuthContextProvider } from './Context/authContext';
 import Register from './pages/register';
 import Login from './pages/Login';
 import ManageUsers from './pages/ManageUsers';
+import UserCertificates from './pages/userCertificates';
+import UserNotifications from './pages/userNotification';
+
 
 
 function AppContent() {
@@ -56,11 +58,13 @@ function AppContent() {
             <Route path="/login" element={<Login />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path='/admin/users' element={<ManageUsers/>}/>
-            <Route path="/admin/form-details/:formId" element={<FormDetails />} />
+            <Route path="/admin/form-details/:applicationId" element={<FormDetails />} />
             <Route path="/admin/approvals" element={<CertificateApprovals/>}></Route>
             <Route  path="/admin" element={<Dashboard />} />
             <Route path='/admin/upload'element={<UploadCertificates/>}></Route>
             <Route path="*" element={<NotFound />} />
+            <Route path="/user/certificates" element={<UserCertificates />} />
+            <Route path="/user/notifications" element={<UserNotifications />} />
           </Routes>
         </main>
         <Footer />

@@ -11,7 +11,7 @@ function Login() {
         password:''
     });
     const navigate = useNavigate();
-    const {setIsAuthenticated,isAuthenticated,setUser} = useAuthContext();
+    const {setIsAuthenticated,setUser} = useAuthContext();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
         setForm({...form,[e.target.name]:e.target.value});
@@ -19,22 +19,26 @@ function Login() {
     const handleSubmit = async (e:React.FormEvent)=>{
         e.preventDefault();
         // check if user is already authenticated
+        
+        
         console.log(form)
         
         await axios.post('http://localhost:8000/api/v1/users/login',form).then((response)=>{
             if(response.status === 200){
                 //check for access token
-                
-                const accessToken = response.data.accessToken;
+
+                const accessToken = response.data.data.accessToken;
                 if(accessToken){
                   localStorage.setItem('accessToken', accessToken);
+                  console.log(accessToken)
                 }
 
                 const userData ={
                   id: response.data.data.user._id,
                   fullName: response.data.data.user.fullName,
                   email: response.data.data.user.email,
-                  role: response.data.data.user.role
+                  role: response.data.data.user.role,
+                  accessToken:accessToken
                 }
                  // set user data in local storage
                 localStorage.setItem('user', JSON.stringify(userData));

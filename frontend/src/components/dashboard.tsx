@@ -1,5 +1,4 @@
-import React, { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   FaUserShield,
   FaUser,
@@ -10,7 +9,6 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import styled from "styled-components";
 import { useAuthContext } from "../Context/authContext";
 import { Navigate } from "react-router-dom";
 import LogoutButton from "./LogoutButton";
@@ -22,28 +20,11 @@ const cardVariants = {
 };
 
 export default function Dashboard() {
-  const {user ,isAuthenticated,setIsAuthenticated,setUser} = useAuthContext();
-  const [showLogin, setShowLogin] = useState(false);
+  const {user} = useAuthContext();
 
 
   if (!user) {
     return <Navigate to="/login" />;
-  }
-  const handleLogout = ()=>{
-    try {
-      // Clear auth token from localStorage
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('user');
-      
-      // Reset auth context
-      setIsAuthenticated(false);
-      setUser(null);
-      
-      // Redirect to login page
-      return <Navigate to="/login" />
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
   }
   
   
@@ -99,7 +80,7 @@ export default function Dashboard() {
                      : "Access your certificates and apply for new ones easily."}
                  </p>
                </div>
-               <div className="button"><button onClick={handleLogout}><LogoutButton></LogoutButton></button></div>
+               <div className="button"><LogoutButton></LogoutButton></div>
              </motion.div>
      
              {/* Service Cards */}
@@ -196,94 +177,5 @@ export default function Dashboard() {
            </div>
          </div>
   );
+
 }
-
-const StyledWrapper = styled.div`
-  .form-box {
-    background: white;
-    border-radius: 1rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
-    width: 90%;
-    max-width: 400px;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid #e5e7eb;
-  }
-
-  .title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .subtitle {
-    font-size: 0.875rem;
-    color: #6b7280;
-    text-align: center;
-    margin-bottom: 1.5rem;
-  }
-
-  .form-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .input {
-    padding: 0.75rem 1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    color: #374151;
-    transition: border-color 0.3s;
-  }
-
-  .input:focus {
-    border-color: #4f46e5;
-    outline: none;
-  }
-
-  .login-btn-client,
-  .login-btn-admin {
-    flex: 1;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    font-weight: 500;
-    transition: background-color 0.3s, transform 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-
-  .login-btn-client {
-    background-color: #2563eb;
-    color: white;
-  }
-
-  .login-btn-client:hover {
-    background-color: #1d4ed8;
-    transform: translateY(-2px);
-  }
-
-  .login-btn-admin {
-    background-color: #16a34a;
-    color: white;
-  }
-
-  .login-btn-admin:hover {
-    background-color: #15803d;
-    transform: translateY(-2px);
-  }
-
-  .form-section {
-    text-align: center;
-    margin-top: 1rem;
-  }
-`;
