@@ -8,9 +8,8 @@ import Gallery from './pages/Gallery';
 import SchemeDetails from './pages/SchemeDetails';
 import YearGallery from './pages/YearGallery';
 import NotFound from './pages/NotFound';
-import Forms from './pages/forms';
 import Dashboard from './components/dashboard';
-import LoginPage from './pages/register';
+//import LoginPage from './pages/register';
 import Loader from './components/loader';
 import FormDetails from './pages/FormDetails';
 import CertificateApprovals from './pages/CertificatesApprovals';
@@ -19,6 +18,14 @@ import { AuthContextProvider } from './Context/authContext';
 import Register from './pages/register';
 import Login from './pages/Login';
 import ManageUsers from './pages/ManageUsers';
+import AboutVathode from './pages/AboutVathode';
+import Members from './pages/Members'; // Import the AboutKhasala component
+// import Certificates from './pages/Certificates';
+import Applyforcertificates from './pages/applyforcertificates';
+import PublicInfo from './pages/publicinfo';
+import Help from './pages/help';
+
+
 
 
 function AppContent() {
@@ -47,7 +54,7 @@ function AppContent() {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/forms" element={<Forms />} />
+            <Route path="/applyforcertificates" element={<Applyforcertificates />} />
             <Route path="/schemes" element={<Schemes />} />
             <Route path="/schemes/:year" element={<SchemeDetails />} />
             <Route path="/gallery" element={<Gallery />} />
@@ -60,7 +67,14 @@ function AppContent() {
             <Route path="/admin/approvals" element={<CertificateApprovals/>}></Route>
             <Route  path="/admin" element={<Dashboard />} />
             <Route path='/admin/upload'element={<UploadCertificates/>}></Route>
+            <Route path="/about-vathode" element={<AboutVathode/>} /> {/* Add the new route here */}
             <Route path="*" element={<NotFound />} />
+            <Route path="home" element={<Home />} />
+            <Route path="/members" element={<Members />} />
+            <Route path="/notices" element={<PublicInfo />} />
+            <Route path="/contact" element={<Help/>} />
+            
+            <Route path="/apply-for-certificates" element={<Applyforcertificates />} />
           </Routes>
         </main>
         <Footer />
