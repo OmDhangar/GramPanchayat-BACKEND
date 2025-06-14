@@ -12,11 +12,14 @@ export default function Home() {
     { src: "/images/developed village 2.webp", alt: "Village 1" },
     { src: "/images/developed village.jpg", alt: "Village 2" },
     { src: "/images/gpvasardi.jpg", alt: "Village 3" },
-    
+    { src: "/images/phu.jpeg", alt: "Village 4" },
+    { src: "/images/place.jpeg", alt: "Village 5" },
+    { src: "/images/samajmandir.jpeg", alt: "Village 6" },
+    { src: "/images/school.jpeg", alt: "Village 7" }
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const timeoutRef = useRef(null);
+  const timeoutRef = useRef<number | null>(null);
 
   const delay = 3000; // Change image every 3 seconds
 
@@ -61,7 +64,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white font-sans text-[14px] sm:text-base">
       {/* Header Banner with Slideshow */}
-      <section className="bg-[#800000] text-white py-4 px-2 sm:py-10 sm:px-6 relative overflow-hidden">
+      <section className="bg-gradient-to-r from-blue-700 via-green-500 to-green-300 text-white py-6 px-2 sm:py-12 sm:px-6 relative overflow-hidden shadow-lg">
         <div className="max-w-6xl mx-auto relative">
           {/* Slideshow Container */}
           <div className="relative w-full h-48 sm:h-96 overflow-hidden rounded-xl sm:rounded-2xl shadow-2xl mb-4 sm:mb-6">
@@ -74,7 +77,7 @@ export default function Home() {
                   key={index}
                   src={img.src}
                   alt={img.alt}
-                  className={`w-full flex-shrink-0 object-cover h-48 sm:h-96 transition-transform duration-[2000ms] ease-in-out ${
+                  className={`w-full flex-shrink-0 object-contain h-48 sm:h-96 transition-transform duration-[2000ms] ease-in-out ${
                     index === currentIndex ? "scale-105 opacity-100" : "scale-100 opacity-60"
                   }`}
                   style={{
@@ -84,7 +87,7 @@ export default function Home() {
               ))}
             </div>
             {/* Swacch Sundar Harit Vathode Title (left, overlay, visible on all screens) */}
-            <div className="absolute left-2 top-2 sm:left-6 sm:top-6 bg-black/30 rounded-lg px-2 py-1 sm:px-4 sm:py-2">
+            <div className="absolute left-2 top-2 sm:left-6 sm:top-6 bg-black/40 rounded-lg px-2 py-1 sm:px-4 sm:py-2 shadow">
               <p className="text-base sm:text-2xl font-semibold leading-tight text-green-200">स्वच्छ सुंदर</p>
               <p className="text-lg sm:text-3xl font-extrabold text-green-400">हरित वाठोडे</p>
             </div>
@@ -93,16 +96,16 @@ export default function Home() {
           {/* Village Title & Dots */}
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 sm:gap-0">
             <div className="text-center sm:text-right w-full">
-              <p className="text-lg sm:text-3xl font-semibold leading-tight">विकसित</p>
-              <p className="text-xl sm:text-4xl font-extrabold text-yellow-400">वाठोडे</p>
+              <p className="text-lg sm:text-3xl font-semibold leading-tight drop-shadow">विकसित</p>
+              <p className="text-xl sm:text-4xl font-extrabold text-yellow-200 drop-shadow">वाठोडे</p>
             </div>
-            {/* Dots for slideshow - always visible, below title on mobile, right on desktop */}
+            {/* Dots for slideshow */}
             <div className="flex justify-center sm:justify-end mt-2 sm:mt-0 w-full sm:w-auto">
               {imageGrid.map((_, idx) => (
                 <button
                   key={idx}
-                  className={`w-2.5 h-2.5 rounded-full mx-1 border-2 border-yellow-400 transition-all duration-300 ${
-                    idx === currentIndex ? "bg-yellow-400 scale-110 shadow" : "bg-white/60"
+                  className={`w-2.5 h-2.5 rounded-full mx-1 border-2 border-yellow-200 transition-all duration-300 ${
+                    idx === currentIndex ? "bg-yellow-300 scale-110 shadow" : "bg-white/60"
                   }`}
                   onClick={() => setCurrentIndex(idx)}
                   aria-label={`Go to slide ${idx + 1}`}
@@ -229,6 +232,109 @@ export default function Home() {
         <p className="text-gray-600 text-sm">(ग्रामसेवक, वाठोडे)</p>
       </div>
     </div>
+  </div>
+</section>
+
+{/* Connect With Government Section */}
+<section className="py-12 px-2 sm:px-6 bg-[#ececff]">
+  <h2 className="text-2xl sm:text-3xl font-bold text-center mb-10 text-black">Connect With Government</h2>
+  <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+    {/* Card 1 */}
+    <a
+      href="https://digitalindia.gov.in/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="relative rounded overflow-hidden shadow-lg group"
+    >
+      <img src="/images/digital_india.jpg" alt="Digital India" className="w-full h-48 object-cover" />
+      <div className="absolute bottom-0 left-0 w-full bg-gray-700 bg-opacity-80 text-white text-lg font-semibold text-center py-2 group-hover:bg-opacity-90 transition">
+        Digital India
+      </div>
+    </a>
+    {/* Card 2 */}
+    <a
+      href="https://www.makeinindia.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="relative rounded overflow-hidden shadow-lg group"
+    >
+      <img src="/images/make_in_india.jpg" alt="Make in India" className="w-full h-48 object-cover" />
+      <div className="absolute bottom-0 left-0 w-full bg-gray-700 bg-opacity-80 text-white text-lg font-semibold text-center py-2 group-hover:bg-opacity-90 transition">
+        Make in India
+      </div>
+    </a>
+    {/* Card 3 */}
+    <a
+      href="https://swachhbharat.mygov.in/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="relative rounded overflow-hidden shadow-lg group"
+    >
+      <img src="/images/swatch-bharat.jpg" alt="Swachh Bharat Abhiyaan" className="w-full h-48 object-cover" />
+      <div className="absolute bottom-0 left-0 w-full bg-gray-700 bg-opacity-80 text-white text-lg font-semibold text-center py-2 group-hover:bg-opacity-90 transition">
+        Swachh Bharat Abhiyan
+      </div>
+    </a>
+    {/* Card 4 */}
+    <a
+      href="https://bharatkeveer.gov.in/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="relative rounded overflow-hidden shadow-lg group"
+    >
+      <img src="/images/bharat-ke-veer.jpg" alt="Bharat ke Veer" className="w-full h-48 object-cover" />
+      <div className="absolute bottom-0 left-0 w-full bg-gray-700 bg-opacity-80 text-white text-lg font-semibold text-center py-2 group-hover:bg-opacity-90 transition">
+        Bharat ke Veer
+      </div>
+    </a>
+    {/* Card 5 */}
+    <a
+      href="https://www.mygov.in/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="relative rounded overflow-hidden shadow-lg group"
+    >
+      <img src="/images/mygov.png" alt="MyGov" className="w-full h-48 object-cover" />
+      <div className="absolute bottom-0 left-0 w-full bg-gray-700 bg-opacity-80 text-white text-lg font-semibold text-center py-2 group-hover:bg-opacity-90 transition">
+        MyGov- Connect with Gov.
+      </div>
+    </a>
+    {/* Card 6 */}
+    <a
+      href="https://pmjdy.gov.in/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="relative rounded overflow-hidden shadow-lg group"
+    >
+      <img src="../../public/images/jan_dhan_yojna.jpg" alt="P.M Jan Dhan Yojana" className="w-full h-48 object-cover" />
+      <div className="absolute bottom-0 left-0 w-full bg-gray-700 bg-opacity-80 text-white text-lg font-semibold text-center py-2 group-hover:bg-opacity-90 transition">
+        P.M Jan Dhan Yojana
+      </div>
+    </a>
+    {/* Card 7 */}
+    <a
+      href="https://www.nsiindia.gov.in/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="relative rounded overflow-hidden shadow-lg group"
+    >
+      <img src="../../public/images/Sukanya_Samriddhi_Yojana_Scheme.jpg" alt="Sukanya Samriddhi Yojana" className="w-full h-48 object-cover" />
+      <div className="absolute bottom-0 left-0 w-full bg-gray-700 bg-opacity-80 text-white text-lg font-semibold text-center py-2 group-hover:bg-opacity-90 transition">
+        Sukanya Samriddhi Yojana
+      </div>
+    </a>
+    {/* Card 8 */}
+    <a
+      href="https://www.skillindia.gov.in/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="relative rounded overflow-hidden shadow-lg group"
+    >
+      <img src="/images/skill_india.jpg" alt="National Skill Dev. Mission" className="w-full h-48 object-cover" />
+      <div className="absolute bottom-0 left-0 w-full bg-gray-700 bg-opacity-80 text-white text-lg font-semibold text-center py-2 group-hover:bg-opacity-90 transition">
+        National Skill Devel. Mission
+      </div>
+    </a>
   </div>
 </section>
     </div>
